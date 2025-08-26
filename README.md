@@ -1,50 +1,151 @@
-# Building a Remote MCP Server on Cloudflare (Without Auth)
+# DataFast Analytics MCP Server
 
-This example allows you to deploy a remote MCP server that doesn't require authentication on Cloudflare Workers. 
+A Model Context Protocol (MCP) server for interacting with DataFast analytics API, deployed on Cloudflare Workers. This server provides tools to track payments, create custom goals, and retrieve visitor data from your DataFast account.
 
-## Get started: 
+## Features
+
+- **Track Payments**: Record payment transactions with detailed metadata
+- **Create Goals**: Set up custom conversion goals for visitor tracking
+- **Get Visitor Data**: Retrieve comprehensive visitor analytics including identity, activity, and conversion predictions
+- **Secure Authentication**: API key-based authentication via query parameters
+- **Real-time Data**: Access to live visitor behavior and prediction data
+
+## DataFast API Integration
+
+This MCP server integrates with the following DataFast API endpoints:
+
+- `POST /api/v1/payments` - Track payments and revenue attribution
+- `POST /api/v1/goals` - Create custom goals for conversion tracking
+- `GET /api/v1/visitors/{id}` - Retrieve detailed visitor analytics
+
+## Authentication
+
+The server requires a DataFast API key passed as a query parameter:
+
+```
+?api_key=your_datafast_api_key
+```
+
+## Get started
+
+### Deploy to Cloudflare Workers
 
 [![Deploy to Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/ai/tree/main/demos/remote-mcp-authless)
 
-This will deploy your MCP server to a URL like: `remote-mcp-server-authless.<your-account>.workers.dev/sse`
+### Local Development
 
-Alternatively, you can use the command line below to get the remote MCP Server created on your local machine:
+1. Clone this repository
+2. Install dependencies:
+
 ```bash
-npm create cloudflare@latest -- my-mcp-server --template=cloudflare/ai/demos/remote-mcp-authless
+npm install
 ```
 
-## Customizing your MCP Server
+3. Start development server:
 
-To add your own [tools](https://developers.cloudflare.com/agents/model-context-protocol/tools/) to the MCP server, define each tool inside the `init()` method of `src/index.ts` using `this.server.tool(...)`. 
+```bash
+npm run dev
+```
 
-## Connect to Cloudflare AI Playground
+Your server will be available at: `http://localhost:8787`
 
-You can connect to your MCP server from the Cloudflare AI Playground, which is a remote MCP client:
+## Usage
 
-1. Go to https://playground.ai.cloudflare.com/
-2. Enter your deployed MCP server URL (`remote-mcp-server-authless.<your-account>.workers.dev/sse`)
-3. You can now use your MCP tools directly from the playground!
+### Connect to Claude Desktop
 
-## Connect Claude Desktop to your MCP server
+To connect to your remote MCP server from Claude Desktop:
 
-You can also connect to your remote MCP server from local MCP clients, by using the [mcp-remote proxy](https://www.npmjs.com/package/mcp-remote). 
-
-To connect to your MCP server from Claude Desktop, follow [Anthropic's Quickstart](https://modelcontextprotocol.io/quickstart/user) and within Claude Desktop go to Settings > Developer > Edit Config.
-
-Update with this configuration:
+1. Follow [Anthropic's Quickstart](https://modelcontextprotocol.io/quickstart/user)
+2. Go to Settings > Developer > Edit Config
+3. Add this configuration:
 
 ```json
 {
   "mcpServers": {
-    "calculator": {
+    "datafast": {
       "command": "npx",
-      "args": [
-        "mcp-remote",
-        "http://localhost:8787/sse"  // or remote-mcp-server-authless.your-account.workers.dev/sse
-      ]
+      "args": ["mcp-remote", "http://localhost:8787/sse?api_key=YOUR_API_KEY"]
     }
   }
 }
 ```
 
-Restart Claude and you should see the tools become available. 
+Replace `YOUR_API_KEY` with your actual DataFast API key.
+
+### Connect to Cloudflare AI Playground
+
+1. Go to https://playground.ai.cloudflare.com/
+2. Enter your deployed MCP server URL with API key:
+   ```
+   https://datafast-mcp-server.your-account.workers.dev/sse?api_key=YOUR_API_KEY
+   ```
+3. You can now use the DataFast tools directly from the playground!
+
+## Available Tools
+
+### 1. create_payment
+
+Track a payment transaction and attribute revenue to traffic sources.
+
+**Parameters:**
+
+- `amount` (number): Payment amount (e.g., 29.99 for $29.99, 0 for free trials)
+- `currency` (string): Currency code like "USD", "EUR", "GBP"
+- `transaction_id` (string): Unique transaction ID from your payment provider
+- `datafast_visitor_id` (string): DataFast visitor ID from browser cookies
+- `email` (string, optional): Customer email
+- `name` (string, optional): Customer name
+- `customer_id` (string, optional): Customer ID from payment provider
+- `renewal` (boolean, optional): Set to true for recurring payments
+- `refunded` (boolean, optional): Set to true for refunded payments
+- `timestamp` (string, optional): Payment timestamp
+
+### 2. create_goal
+
+Create a custom goal for a specific visitor.
+
+**Parameters:**
+
+- `datafast_visitor_id` (string): The DataFast unique ID of the visitor
+- `name` (string): Name for the goal (lowercase letters, numbers, underscores, hyphens, max 32 chars)
+- `metadata` (object, optional): Custom parameters to enrich your event data
+
+### 3. get_visitor_data
+
+Retrieve identity, activity, and prediction data for a specific visitor.
+
+**Parameters:**
+
+- `datafast_visitor_id` (string): The DataFast visitor ID to retrieve data for
+
+**Returns:**
+
+- Location and device information
+- Visit and pageview counts
+- Traffic source attribution
+- Completed goals
+- Conversion predictions (if available)
+
+## API Key Setup
+
+1. Navigate to your Website's Settings > API tab in the DataFast dashboard
+2. Generate a new API key
+3. Copy the key immediately (it won't be shown again)
+4. Use it in your MCP server URL as a query parameter
+
+## Error Handling
+
+The server provides comprehensive error handling for:
+
+- Missing or invalid API keys
+- Bot detection (400 errors)
+- Missing pageviews (404 errors)
+- Network connectivity issues
+- Invalid request parameters
+
+## Security Notes
+
+- API keys are passed via query parameters for simplicity
+- Consider using environment variables for production deployments
+- Never expose API keys in client-side code or public repositories
+- The server validates all input parameters before making API calls
