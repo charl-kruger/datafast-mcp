@@ -9,10 +9,10 @@ type Props = {
 };
 
 export class DataFastMCP extends McpAgent<Env, State, Props> {
-	server = new McpServer({
-		name: "DataFast Analytics API",
-		version: "1.0.0",
-	});
+  server = new McpServer({
+    name: "DataFast Analytics API",
+    version: "1.0.0",
+  });
 
   async init() {
     // Create a payment tool
@@ -79,7 +79,9 @@ export class DataFastMCP extends McpAgent<Env, State, Props> {
           });
 
           if (!response.ok) {
-            const errorData = await response.json().catch(() => ({})) as { error?: { message?: string } };
+            const errorData = (await response.json().catch(() => ({}))) as {
+              error?: { message?: string };
+            };
             return {
               content: [
                 {
@@ -93,7 +95,10 @@ export class DataFastMCP extends McpAgent<Env, State, Props> {
             };
           }
 
-          const result = await response.json() as { message: string; transaction_id: string };
+          const result = (await response.json()) as {
+            message: string;
+            transaction_id: string;
+          };
           return {
             content: [
               {
@@ -157,7 +162,9 @@ export class DataFastMCP extends McpAgent<Env, State, Props> {
           });
 
           if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+            const errorData = (await response.json().catch(() => ({}))) as {
+              error?: { message?: string };
+            };
             let errorMessage = `Error ${response.status}: ${
               errorData.error?.message || response.statusText
             }`;
@@ -181,7 +188,10 @@ export class DataFastMCP extends McpAgent<Env, State, Props> {
             };
           }
 
-          const result = await response.json() as { message: string; event_id?: string };
+          const result = (await response.json()) as {
+            message: string;
+            event_id?: string;
+          };
           return {
             content: [
               {
@@ -234,7 +244,9 @@ export class DataFastMCP extends McpAgent<Env, State, Props> {
           );
 
           if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+            const errorData = (await response.json().catch(() => ({}))) as {
+              error?: { message?: string };
+            };
             let errorMessage = `Error ${response.status}: ${
               errorData.error?.message || response.statusText
             }`;
@@ -255,7 +267,7 @@ export class DataFastMCP extends McpAgent<Env, State, Props> {
             };
           }
 
-          const result = await response.json() as {
+          const result = (await response.json()) as {
             status: string;
             data?: {
               visitorId: string;
@@ -370,9 +382,12 @@ export default {
     // Extract API key from query parameters
     const apiKey = url.searchParams.get("api_key");
     if (!apiKey) {
-      return new Response("DataFast API key is required. Please provide it as a query parameter: ?api_key=your_api_key", {
-        status: 401,
-      });
+      return new Response(
+        "DataFast API key is required. Please provide it as a query parameter: ?api_key=your_api_key",
+        {
+          status: 401,
+        }
+      );
     }
 
     // Store API key in context props for the MCP agent to use

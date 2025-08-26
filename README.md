@@ -20,11 +20,13 @@ This MCP server integrates with the following DataFast API endpoints:
 
 ## Authentication
 
-The server requires a DataFast API key passed as a query parameter:
+The server requires a DataFast API key passed as a query parameter in the MCP server URL:
 
 ```
-?api_key=your_datafast_api_key
+https://your-server.workers.dev/sse?api_key=your_datafast_api_key
 ```
+
+The API key is securely extracted in the server and used for all DataFast API calls.
 
 ## Get started
 
@@ -75,7 +77,7 @@ Replace `YOUR_API_KEY` with your actual DataFast API key.
 ### Connect to Cloudflare AI Playground
 
 1. Go to https://playground.ai.cloudflare.com/
-2. Enter your deployed MCP server URL with API key:
+2. Enter your MCP server URL with API key:
    ```
    https://datafast-mcp-server.your-account.workers.dev/sse?api_key=YOUR_API_KEY
    ```
