@@ -357,6 +357,19 @@ This MCP server runs on Cloudflare Workers and provides:
 - **Resources** for framework-specific documentation
 - **Prompts** for guided setup workflows (future enhancement)
 
+## Alternative: AI Code Editor Prompt
+
+If you can't or don't want to use the MCP server, you can use the comprehensive base prompt for AI code editors:
+
+📄 **[PROMPT.md](./PROMPT.md)** - Copy this prompt to any AI assistant for DataFa.st integration help
+
+The prompt includes:
+- Complete DataFa.st API knowledge
+- Framework-specific code examples (Next.js, Vue, React, Laravel, etc.)
+- Integration patterns and best practices
+- Troubleshooting guidance
+- Production deployment checklists
+
 ## Support
 
 For issues with the MCP server, please create an issue in this repository.  
