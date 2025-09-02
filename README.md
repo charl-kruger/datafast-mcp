@@ -202,7 +202,7 @@ Track custom conversion events like signups, downloads, etc.
 
 ```
 create_goal(
-  visitorId: "visitor-id-from-cookies",
+  visitorId: "visitor-id-from-cookies", // Get from DevTools > Application > Cookies > datafast_visitor_id
   name: "newsletter_signup",
   metadata: { source: "homepage" } // optional
 )
@@ -213,7 +213,7 @@ Attribute revenue to marketing channels for ROI tracking.
 
 ```
 track_payment(
-  visitorId: "visitor-id-from-cookies",
+  visitorId: "visitor-id-from-cookies", // Get from DevTools > Application > Cookies > datafast_visitor_id
   amount: 29.99,
   currency: "USD",
   transactionId: "unique-id",
@@ -225,7 +225,7 @@ track_payment(
 Retrieve detailed visitor analytics and conversion predictions.
 
 ```
-get_visitor_data(visitorId: "visitor-id-from-cookies")
+get_visitor_data(visitorId: "visitor-id-from-cookies") // Get from DevTools > Application > Cookies > datafast_visitor_id
 ```
 
 ### `validate_installation`
@@ -263,10 +263,16 @@ The MCP provides comprehensive setup guides accessible via resource URIs:
    validate_installation(domain: "mysite.com", websiteId: "abc123", useProxy: true)
    ```
 
-4. **Track conversions**:
+4. **Get your visitor ID for testing**:
+   - Visit your website with DataFa.st installed
+   - Open DevTools → Application tab → Cookies
+   - Find cookie named `datafast_visitor_id` (scoped to your domain)
+   - Copy the visitor ID value
+
+5. **Track conversions**:
    ```
-   create_goal(visitorId: "visitor123", name: "signup")
-   track_payment(visitorId: "visitor123", amount: 29.99, currency: "USD", transactionId: "txn456")
+   create_goal(visitorId: "your-actual-visitor-id", name: "signup")
+   track_payment(visitorId: "your-actual-visitor-id", amount: 29.99, currency: "USD", transactionId: "txn456")
    ```
 
 ## Common Issues & Solutions
@@ -285,6 +291,13 @@ The MCP provides comprehensive setup guides accessible via resource URIs:
 - Ensure visitor has pageviews before payment tracking
 - Use correct visitor ID from cookies (`datafast_visitor_id`)
 - Verify API key permissions
+
+### Can't Find Visitor ID
+- Ensure DataFa.st tracking script is installed and running
+- Visit your website first to generate the cookie
+- Check DevTools > Application > Cookies for `datafast_visitor_id`
+- Visitor ID is domain-specific - use the one from your actual domain
+- If no cookie exists, tracking script may not be working properly
 
 ### MCP Connection Issues
 - Verify your DataFa.st API key is correct and active

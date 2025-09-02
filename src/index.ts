@@ -229,7 +229,7 @@ export default {
       "create_goal",
       "Create a custom conversion goal in DataFa.st to track user actions like signups, purchases, or downloads.",
       {
-        visitorId: z.string().describe("DataFa.st visitor ID from browser cookies (datafast_visitor_id)"),
+        visitorId: z.string().describe("DataFa.st visitor ID from browser cookies - find it in DevTools > Application > Cookies > datafast_visitor_id"),
         name: z.string().describe("Goal name (lowercase, max 32 chars, e.g. 'newsletter_signup', 'purchase')"),
         metadata: z.record(z.string()).optional().describe("Optional metadata object with custom properties (max 10 properties)")
       },
@@ -288,7 +288,7 @@ export default {
       "track_payment",
       "Track a payment in DataFa.st for revenue attribution to marketing channels. Links revenue to traffic sources.",
       {
-        visitorId: z.string().describe("DataFa.st visitor ID from browser cookies (datafast_visitor_id)"),
+        visitorId: z.string().describe("DataFa.st visitor ID from browser cookies - find it in DevTools > Application > Cookies > datafast_visitor_id"),
         amount: z.number().describe("Payment amount (e.g., 29.99 for $29.99)"),
         currency: z.string().describe("Currency code (USD, EUR, GBP, etc.)"),
         transactionId: z.string().describe("Unique transaction ID from your payment system"),
@@ -359,7 +359,7 @@ export default {
       "get_visitor_data",
       "Retrieve detailed analytics data for a specific visitor, including conversion predictions and activity history.",
       {
-        visitorId: z.string().describe("DataFa.st visitor ID to retrieve data for")
+        visitorId: z.string().describe("DataFa.st visitor ID - find it in your browser's DevTools > Application > Cookies > datafast_visitor_id")
       },
       async (params) => {
         const apiKey = this.props.apiKey;
@@ -501,6 +501,13 @@ export default {
         response += `• Visit https://datafa.st/dashboard\n`;
         response += `• Check for recent pageviews in real-time\n`;
         response += `• Verify visitor count increases\n\n`;
+        
+        response += `✅ **5. Get Your Visitor ID for Testing**\n`;
+        response += `• Open DevTools → Application tab → Cookies\n`;
+        response += `• Look for cookie named: \`datafast_visitor_id\`\n`;
+        response += `• Copy the visitor ID value (domain-scoped to your site)\n`;
+        response += `• Use this ID with \`get_visitor_data\` to test analytics retrieval\n`;
+        response += `• Example: \`get_visitor_data(visitorId: "abc-123-def-456")\`\n\n`;
         
         response += `🚨 **Troubleshooting Common Issues:**\n`;
         response += `• **No script loading:** Check script placement and syntax\n`;
@@ -690,6 +697,13 @@ After setup, test your installation:
 ## Goals & Revenue Tracking
 
 ### Track Custom Goals
+
+**Get Visitor ID from Browser:**
+1. Open DevTools → Application tab → Cookies
+2. Find \`datafast_visitor_id\` cookie (domain-scoped)
+3. Copy the visitor ID value
+
+**JavaScript Example:**
 \`\`\`javascript
 // Get visitor ID from cookies
 const visitorId = document.cookie
@@ -706,6 +720,11 @@ fetch('/api/datafast-goal', {
     metadata: { source: 'homepage' }
   })
 });
+\`\`\`
+
+**Using MCP Tools:**
+\`\`\`
+create_goal(visitorId: "your-visitor-id-from-cookies", name: "newsletter_signup")
 \`\`\`
 
 ### Track Revenue
