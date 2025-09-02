@@ -457,7 +457,110 @@ export default {
       }
     );
 
-    // Tool 5: Validate installation
+    // Tool 5: Help and guidance
+    this.server.tool(
+      "datafast_help",
+      "Get help and guidance on using DataFa.st MCP tools. Shows available tools, common workflows, and next steps.",
+      {
+        topic: z.enum(['overview', 'setup', 'tracking', 'analytics', 'troubleshooting', 'all']).optional().describe("Specific help topic (default: 'all')")
+      },
+      async (params) => {
+        const { topic = 'all' } = params;
+        
+        let response = `🚀 **DataFa.st MCP Help Center**\n\n`;
+        
+        if (topic === 'all' || topic === 'overview') {
+          response += `## What can this MCP do?\n\n`;
+          response += `The DataFa.st MCP helps you integrate analytics and revenue tracking into your applications with zero friction:\n\n`;
+          response += `📊 **Generate tracking scripts** for 10+ frameworks (Next.js, React, Vue, etc.)\n`;
+          response += `🛡️ **Set up ad blocker protection** with proxy configurations\n`;
+          response += `🎯 **Track custom goals** like signups, downloads, conversions\n`;
+          response += `💰 **Attribute revenue** to marketing channels and traffic sources\n`;
+          response += `📈 **Analyze visitor behavior** with AI-powered conversion predictions\n`;
+          response += `✅ **Validate installations** and troubleshoot issues\n\n`;
+        }
+        
+        if (topic === 'all' || topic === 'setup') {
+          response += `## 🚀 Quick Setup Workflow\n\n`;
+          response += `**1. Get your Website ID** from https://datafa.st/dashboard\n\n`;
+          response += `**2. Generate tracking code:**\n`;
+          response += `\`\`\`\ngenerate_tracking_script(\n  websiteId: "your-website-id",\n  domain: "yourdomain.com",\n  framework: "nextjs", // or your framework\n  useProxy: true // recommended\n)\n\`\`\`\n\n`;
+          response += `**3. Install the generated code** in your app\n\n`;
+          response += `**4. Test installation:**\n`;
+          response += `\`\`\`\nvalidate_installation(\n  domain: "yourdomain.com",\n  websiteId: "your-website-id",\n  useProxy: true\n)\n\`\`\`\n\n`;
+        }
+        
+        if (topic === 'all' || topic === 'tracking') {
+          response += `## 🎯 Tracking & Analytics\n\n`;
+          response += `**Get your visitor ID:**\n`;
+          response += `- Visit your website with DataFa.st installed\n`;
+          response += `- Open DevTools → Application → Cookies → \`datafast_visitor_id\`\n\n`;
+          response += `**Track goals:**\n`;
+          response += `\`\`\`\ncreate_goal(\n  visitorId: "your-visitor-id",\n  name: "newsletter_signup"\n)\n\`\`\`\n\n`;
+          response += `**Track payments:**\n`;
+          response += `\`\`\`\ntrack_payment(\n  visitorId: "your-visitor-id",\n  amount: 29.99,\n  currency: "USD",\n  transactionId: "txn-123"\n)\n\`\`\`\n\n`;
+        }
+        
+        if (topic === 'all' || topic === 'analytics') {
+          response += `## 📈 Analytics & Insights\n\n`;
+          response += `**Get visitor analytics:**\n`;
+          response += `\`\`\`\nget_visitor_data(visitorId: "your-visitor-id")\n\`\`\`\n\n`;
+          response += `This returns:\n`;
+          response += `- 🌍 Location and device info\n`;
+          response += `- 📊 Visit counts and pageviews\n`;
+          response += `- 🎯 Completed goals and activities\n`;
+          response += `- 🤖 AI conversion predictions (0-100 score)\n`;
+          response += `- 💰 Expected revenue estimates\n\n`;
+        }
+        
+        if (topic === 'all' || topic === 'troubleshooting') {
+          response += `## 🔧 Common Issues & Solutions\n\n`;
+          response += `**No data in dashboard?**\n`;
+          response += `- Wait 5-10 minutes after setup\n`;
+          response += `- Use \`validate_installation\` tool\n`;
+          response += `- Check browser network tab for requests\n\n`;
+          response += `**Can't find visitor ID?**\n`;
+          response += `- Ensure tracking script is installed\n`;
+          response += `- Visit your site first to generate the cookie\n`;
+          response += `- Look in DevTools → Application → Cookies\n\n`;
+          response += `**Ad blockers blocking tracking?**\n`;
+          response += `- Use \`useProxy: true\` when generating scripts\n`;
+          response += `- Follow the generated proxy configuration\n\n`;
+        }
+        
+        if (topic === 'all') {
+          response += `## 🛠️ Available Tools\n\n`;
+          response += `- **\`generate_tracking_script\`** - Create framework-specific code\n`;
+          response += `- **\`validate_installation\`** - Test your setup\n`;
+          response += `- **\`create_goal\`** - Track conversions\n`;
+          response += `- **\`track_payment\`** - Revenue attribution\n`;
+          response += `- **\`get_visitor_data\`** - Analytics insights\n`;
+          response += `- **\`datafast_help\`** - This help system\n\n`;
+          
+          response += `## 📚 Resources\n\n`;
+          response += `Access setup guides:\n`;
+          response += `- \`setup://datafast/onboarding\` - General guide\n`;
+          response += `- \`setup://datafast/nextjs\` - Next.js guide\n`;
+          response += `- \`setup://datafast/react\` - React guide\n`;
+          response += `- And guides for Vue, Angular, Laravel, Django, etc.\n\n`;
+          
+          response += `## 🤔 What would you like to do?\n\n`;
+          response += `**New to DataFa.st?** Start with \`generate_tracking_script\`\n`;
+          response += `**Already installed?** Try \`validate_installation\`\n`;
+          response += `**Want to track goals?** Use \`create_goal\`\n`;
+          response += `**Need analytics data?** Use \`get_visitor_data\`\n`;
+          response += `**Having issues?** Run \`validate_installation\` for troubleshooting\n\n`;
+          
+          response += `💡 **Tip:** All tools include detailed guidance and error messages to help you succeed!`;
+        }
+        
+        return {
+          content: [{ type: "text", text: response }]
+        };
+      }
+    );
+
+    // Tool 6: Validate installation
     this.server.tool(
       "validate_installation",
       "Validate that DataFa.st tracking is properly installed and working on your website. Checks script loading and event tracking.",

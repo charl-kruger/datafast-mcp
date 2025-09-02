@@ -165,6 +165,7 @@ Visit [DataFa.st Dashboard](https://datafa.st/dashboard) and copy your Website I
 After setting up the MCP server in your IDE, verify it's working:
 
 1. **Check Available Tools**: Look for DataFa.st tools in your IDE's MCP tool list:
+   - `datafast_help`
    - `generate_tracking_script`
    - `create_goal` 
    - `track_payment`
@@ -172,6 +173,10 @@ After setting up the MCP server in your IDE, verify it's working:
    - `validate_installation`
 
 2. **Test Connection**: Try running a simple command like:
+   ```
+   datafast_help()
+   ```
+   or
    ```
    generate_tracking_script(websiteId: "test", domain: "example.com")
    ```
@@ -184,6 +189,17 @@ After setting up the MCP server in your IDE, verify it's working:
 If tools don't appear, check the troubleshooting section below.
 
 ## Available Tools
+
+### `datafast_help`
+Get comprehensive help and guidance on using the DataFa.st MCP tools.
+
+```
+datafast_help() // Shows complete overview and workflow
+datafast_help(topic: "setup") // Setup-specific help
+datafast_help(topic: "tracking") // Goal and payment tracking help
+datafast_help(topic: "analytics") // Analytics and insights help
+datafast_help(topic: "troubleshooting") // Common issues and solutions
+```
 
 ### `generate_tracking_script`
 Generates framework-specific tracking code with optional proxy setup.
@@ -251,25 +267,30 @@ The MCP provides comprehensive setup guides accessible via resource URIs:
 
 ## Quick Start Example
 
-1. **Generate tracking script**:
+1. **Get help and overview**:
+   ```
+   datafast_help()
+   ```
+
+2. **Generate tracking script**:
    ```
    generate_tracking_script(websiteId: "abc123", domain: "mysite.com", framework: "nextjs", useProxy: true)
    ```
 
-2. **Install the generated code** in your application
+3. **Install the generated code** in your application
 
-3. **Validate installation**:
+4. **Validate installation**:
    ```
    validate_installation(domain: "mysite.com", websiteId: "abc123", useProxy: true)
    ```
 
-4. **Get your visitor ID for testing**:
+5. **Get your visitor ID for testing**:
    - Visit your website with DataFa.st installed
    - Open DevTools → Application tab → Cookies
    - Find cookie named `datafast_visitor_id` (scoped to your domain)
    - Copy the visitor ID value
 
-5. **Track conversions**:
+6. **Track conversions**:
    ```
    create_goal(visitorId: "your-actual-visitor-id", name: "signup")
    track_payment(visitorId: "your-actual-visitor-id", amount: 29.99, currency: "USD", transactionId: "txn456")
