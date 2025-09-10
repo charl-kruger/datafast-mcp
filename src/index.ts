@@ -30,10 +30,10 @@ export class DataFastMCP extends McpAgent<Env, State, Props> {
       name: 'Next.js',
       scriptTemplate: `// Add to your _app.js or layout.js
 <Script
-  defer
   data-website-id="{WEBSITE_ID}"
   data-domain="{DOMAIN}"
   src="{SCRIPT_SRC}"
+  strategy="afterInteractive"
 />`,
       proxyTemplate: `// next.config.js
 module.exports = {
@@ -179,8 +179,8 @@ export default {
   async init() {
     // Tool 1: Generate tracking script for detected framework
     this.server.tool(
-      "generate_tracking_script",
-      "Generate DataFa.st tracking script for your specific framework. Automatically detects framework or accepts manual selection.",
+      "install_tracking_script",
+      "Install DataFa.st tracking script for your specific framework. Automatically detects framework or accepts manual selection.",
       {
         websiteId: z.string().describe("Your website ID from DataFa.st dashboard (required - get this from https://datafa.st/dashboard)"),
         domain: z.string().describe("Your website domain (e.g., 'example.com')"),
@@ -227,7 +227,7 @@ export default {
     // Tool 2: Create custom goal
     this.server.tool(
       "create_goal",
-      "Create a custom conversion goal in DataFa.st to track user actions like signups, purchases, or downloads.",
+      "Create a custom conversion goal using DataFa.st API to track user actions like signups, purchases, or downloads.",
       {
         visitorId: z.string().describe("DataFa.st visitor ID from browser cookies - find it in DevTools > Application > Cookies > datafast_visitor_id"),
         name: z.string().describe("Goal name (lowercase, max 32 chars, e.g. 'newsletter_signup', 'purchase')"),
@@ -285,8 +285,8 @@ export default {
 
     // Tool 3: Track payment for revenue attribution
     this.server.tool(
-      "track_payment",
-      "Track a payment in DataFa.st for revenue attribution to marketing channels. Links revenue to traffic sources.",
+      "create_payment",
+      "Create a payment using DataFa.st API. Used for display in your DataFast dashboard and for revenue attribution to marketing channels. Links revenue to traffic sources.",
       {
         visitorId: z.string().describe("DataFa.st visitor ID from browser cookies - find it in DevTools > Application > Cookies > datafast_visitor_id"),
         amount: z.number().describe("Payment amount (e.g., 29.99 for $29.99)"),
@@ -357,7 +357,7 @@ export default {
     // Tool 4: Get visitor analytics data
     this.server.tool(
       "get_visitor_data",
-      "Retrieve detailed analytics data for a specific visitor, including conversion predictions and activity history.",
+      "Retrieve detailed analytics data for a specific visitor, including conversion predictions and activity history, using DataFast API",
       {
         visitorId: z.string().describe("DataFa.st visitor ID - find it in your browser's DevTools > Application > Cookies > datafast_visitor_id")
       },
@@ -484,7 +484,7 @@ export default {
           response += `## 🚀 Quick Setup Workflow\n\n`;
           response += `**1. Get your Website ID** from https://datafa.st/dashboard\n\n`;
           response += `**2. Generate tracking code:**\n`;
-          response += `\`\`\`\ngenerate_tracking_script(\n  websiteId: "your-website-id",\n  domain: "yourdomain.com",\n  framework: "nextjs", // or your framework\n  useProxy: true // recommended\n)\n\`\`\`\n\n`;
+          response += `\`\`\`\ninstall_tracking_script(\n  websiteId: "your-website-id",\n  domain: "yourdomain.com",\n  framework: "nextjs", // or your framework\n  useProxy: true // recommended\n)\n\`\`\`\n\n`;
           response += `**3. Install the generated code** in your app\n\n`;
           response += `**4. Test installation:**\n`;
           response += `\`\`\`\nvalidate_installation(\n  domain: "yourdomain.com",\n  websiteId: "your-website-id",\n  useProxy: true\n)\n\`\`\`\n\n`;
@@ -498,7 +498,7 @@ export default {
           response += `**Track goals:**\n`;
           response += `\`\`\`\ncreate_goal(\n  visitorId: "your-visitor-id",\n  name: "newsletter_signup"\n)\n\`\`\`\n\n`;
           response += `**Track payments:**\n`;
-          response += `\`\`\`\ntrack_payment(\n  visitorId: "your-visitor-id",\n  amount: 29.99,\n  currency: "USD",\n  transactionId: "txn-123"\n)\n\`\`\`\n\n`;
+          response += `\`\`\`\ncreate_payment(\n  visitorId: "your-visitor-id",\n  amount: 29.99,\n  currency: "USD",\n  transactionId: "txn-123"\n)\n\`\`\`\n\n`;
         }
         
         if (topic === 'all' || topic === 'analytics') {
@@ -530,10 +530,10 @@ export default {
         
         if (topic === 'all') {
           response += `## 🛠️ Available Tools\n\n`;
-          response += `- **\`generate_tracking_script\`** - Create framework-specific code\n`;
+          response += `- **\`install_tracking_script\`** - Create framework-specific code\n`;
           response += `- **\`validate_installation\`** - Test your setup\n`;
           response += `- **\`create_goal\`** - Track conversions\n`;
-          response += `- **\`track_payment\`** - Revenue attribution\n`;
+          response += `- **\`create_payment\`** - Revenue attribution\n`;
           response += `- **\`get_visitor_data\`** - Analytics insights\n`;
           response += `- **\`datafast_help\`** - This help system\n\n`;
           
@@ -545,7 +545,7 @@ export default {
           response += `- And guides for Vue, Angular, Laravel, Django, etc.\n\n`;
           
           response += `## 🤔 What would you like to do?\n\n`;
-          response += `**New to DataFa.st?** Start with \`generate_tracking_script\`\n`;
+          response += `**New to DataFa.st?** Start with \`install_tracking_script\`\n`;
           response += `**Already installed?** Try \`validate_installation\`\n`;
           response += `**Want to track goals?** Use \`create_goal\`\n`;
           response += `**Need analytics data?** Use \`get_visitor_data\`\n`;
@@ -621,7 +621,7 @@ export default {
         
         response += `📊 **Next Steps:**\n`;
         response += `• Use \`create_goal\` to track conversions\n`;
-        response += `• Use \`track_payment\` for revenue attribution\n`;
+        response += `• Use \`create_payment\` for revenue attribution\n`;
         response += `• Use \`get_visitor_data\` to analyze visitor behavior\n\n`;
         
         response += `💡 **Pro Tip:** Wait 5-10 minutes after installation before checking dashboard data.`;
@@ -685,7 +685,7 @@ export default {
 Use the MCP tools to generate framework-specific code:
 
 \`\`\`
-generate_tracking_script(
+install_tracking_script(
   websiteId: "your-website-id",
   domain: "yourdomain.com",
   framework: "nextjs", // or your framework
@@ -712,7 +712,7 @@ create_goal(
   name: "newsletter_signup"
 )
 
-track_payment(
+create_payment(
   visitorId: "visitor-id-from-cookies",
   amount: 29.99,
   currency: "USD",
